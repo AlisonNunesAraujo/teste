@@ -1,20 +1,48 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import React, {useEffect, useState} from 'react';
+import { FlatList, Text, View } from 'react-native';
+
+import api from './src/services/api'
+
 
 export default function App() {
+
+  const [moeda, setMoeda] = useState()
+
+  useEffect( () => {
+    async function Dados(){
+      const armazenarApi = await api.get('https://economia.awesomeapi.com.br/last/USD-BRL,EUR-BRL,BTC-BRL')
+      console.log(armazenarApi.data)
+      setMoeda(armazenarApi.data)
+    }
+
+    Dados();
+  }, [] )
+
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
+    <View>
+
+      <FlatList
+      data={moeda}
+      renderItem={ ({item}) => <Resposta data={item}/> }
+      />
+
+      
+      
     </View>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+function Resposta(props){
+  return(
+    <View>
+      <Text>{props.data.ask}</Text>
+
+    </View>
+  )
+}
+
+
+
+
+
+
